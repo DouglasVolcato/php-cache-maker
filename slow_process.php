@@ -6,14 +6,11 @@ class SlowProcess
     {
         sleep(5);
         return (object)[
-            'success' => true,
-            'message' => 'Success',
-            'data1' => 'Some data',
-            'data2' => 'Some data',
-            'data3' => 'Some data',
-            'data4' => 'Some data',
-            'data5' => 'Some data',
-            'data6' => 'Some data231231232',
+            'param1' => $param1,
+            'param2' => $param2,
+            'param3' => $param3,
+            'param4' => $param4,
+            'param5' => $param5
         ];
     }
 }
