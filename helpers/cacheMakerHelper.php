@@ -38,8 +38,8 @@ class CacheMakerHelper
     {
         $this->db->exec("
             CREATE TABLE IF NOT EXISTS {$this->cacheName} (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                cache_key TEXT NOT NULL UNIQUE,
+                id varchar(255) PRIMARY KEY,
+                cache_key TEXT NOT NULL,
                 value TEXT NOT NULL,
                 updated_at DATETIME
             )
@@ -80,8 +80,10 @@ class CacheMakerHelper
     }
 
     private function insertCache($key, $value)
-    {
-        $stmt = $this->db->prepare("INSERT INTO {$this->cacheName} (cache_key, updated_at, value) VALUES (:key, :time, :value)");
+    {   $id = uniqid();
+        $stmt = $this->db->exec("DELETE FROM {$this->cacheName} WHERE id = '{$id}'");
+        $stmt = $this->db->prepare("INSERT INTO {$this->cacheName} (id, cache_key, updated_at, value) VALUES (:id, :key, :time, :value)");
+        $stmt->bindValue(':id', $id, SQLITE3_TEXT );
         $stmt->bindValue(':time', date('Y-m-d H:i:s'), SQLITE3_TEXT);
         $stmt->bindValue(':key', $key, SQLITE3_TEXT);
         $stmt->bindValue(':value', json_encode($value), SQLITE3_TEXT);
