@@ -41,7 +41,7 @@ class CacheMakerHelper
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cache_key TEXT NOT NULL UNIQUE,
                 value TEXT NOT NULL,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                updated_at DATETIME
             )
         ");
     }
@@ -81,7 +81,8 @@ class CacheMakerHelper
 
     private function insertCache($key, $value)
     {
-        $stmt = $this->db->prepare("INSERT INTO {$this->cacheName} (cache_key, value) VALUES (:key, :value)");
+        $stmt = $this->db->prepare("INSERT INTO {$this->cacheName} (cache_key, updated_at, value) VALUES (:key, :time, :value)");
+        $stmt->bindValue(':time', date('Y-m-d H:i:s'), SQLITE3_TEXT);
         $stmt->bindValue(':key', $key, SQLITE3_TEXT);
         $stmt->bindValue(':value', json_encode($value), SQLITE3_TEXT);
         $stmt->execute();
